@@ -4,8 +4,13 @@
            DATA DIVISION.
             WORKING-STORAGE SECTION.
       *    Internal variables
-             01 I-ITER      PIC 999 VALUE 0.
+
+             01 I-ITER      PIC 999.
             
+             01 I-NUM-CONSECUTIVE-SPACES PIC 9 VALUE 0.
+             01 I-PREVIOUS-CHAR-WAS-SPACE PIC 9 VALUE 0.
+             01 I-MAX-CONSECUTIVE-SPACES PIC 9 VALUE 10.
+
              01 I-CAPITAL-A-ASCII PIC 999 VALUE 66.
              01 I-CAPITAL-Z-ASCII PIC 999 VALUE 91.
              01 I-LOWER-A-ASCII   PIC 999 VALUE 98.
@@ -28,40 +33,41 @@
              01 STR-OUTPUT     PIC X(100).
 
       *    Return variable
-             01 I-RET-VAL   PIC 9 VALUE 0.
            
            PROCEDURE DIVISION
-            USING STR-INPUT I-INPUT-LEN I-SHIFT-AMOUNT STR-OUTPUT
-            RETURNING I-RET-VAL.
+            USING STR-INPUT I-INPUT-LEN I-SHIFT-AMOUNT STR-OUTPUT.
             
-            DISPLAY "ENTERED CAESAR-SHIFT"
-            DISPLAY "ABOUT TO PRINT INPUT"
-            DISPLAY STR-INPUT
+      *     DISPLAY "ENTERED CAESAR-SHIFT"
 
-            DISPLAY "CURRENTLY ENCRYPTING: ", STR-INPUT, "'"
-      *     DISPLAY "- SHIFT AMOUNT: " I-SHIFT-AMOUNT
-      *     DISPLAY "- LENGTH: ", I-INPUT-LEN
+      *     DISPLAY "- CURRENTLY SHIFTING: '", STR-INPUT, "'"
+      *     DISPLAY "- I-SHIFT-AMOUNT: " I-SHIFT-AMOUNT
+      *     DISPLAY "- I-INPUT-LEN: ", I-INPUT-LEN
             
       *     INITIALIZE the OUTPUT STRING TO have only SPACES
-            DISPLAY "ABOUT TO MOVE SPACES TO OUTPUT"
+      *     DISPLAY "ABOUT TO MOVE SPACES TO OUTPUT"
             MOVE SPACES TO STR-OUTPUT.
+      *     DISPLAY "MOVED SPACES TO OUTPUT"
 
       *     Loop through each character in the the string
             PERFORM VARYING I-ITER FROM 1 BY 1 
-                    UNTIL I-ITER > I-INPUT-LEN
-             
+                    UNTIL I-ITER >= I-INPUT-LEN
+
       *      Grab the current CHARACTER
-             DISPLAY "ABOUT TO A CHARACTER FROM INPUT STRING TO A VAR"
+      *      DISPLAY "ABOUT TO MOVE A CHARACTER FROM",
+      *                "INPUT STRING TO A VAR"
              MOVE STR-INPUT(I-ITER:1) TO C-CURR-CHAR
-             DISPLAY "MOVED CHARACTER FROM INPUT STRING TO A VAR"
+      *      DISPLAY "MOVED CHARACTER FROM INPUT STRING TO A VAR"
              
       *      Get the ASCII value (+1) of the current character
              COMPUTE I-CURR-VAL-ASCII =
                        FUNCTION ORD(STR-INPUT(I-ITER:1))
 
       *      Debug
-             DISPLAY I-ITER, ": " I-CURR-VAL-ASCII, ", '"
-                       , C-CURR-CHAR, "': " WITH NO ADVANCING
+             DISPLAY "I-CURR-VAL-ASCII: ", I-CURR-VAL-ASCII
+             DISPLAY "C-CURR-CHAR: ", C-CURR-CHAR
+             DISPLAY "I-ITER: ", I-ITER
+             DISPLAY "I-INPUT-LEN: ", I-INPUT-LEN
+             DISPLAY " "
 
       *      Initialize the output ASCII val and char to the current val
              MOVE FUNCTION CHAR(I-CURR-VAL-ASCII) TO C-NEW-CHAR
@@ -78,7 +84,7 @@
                 AND I-CURR-VAL-ASCII NOT = I-SPACE-ASCII
 
       *       Debug
-              DISPLAY "uppercase     " WITH NO ADVANCING
+      *       DISPLAY "uppercase     " WITH NO ADVANCING
               
       *       Add the shifting amount to the ascii value
               ADD I-SHIFT-AMOUNT
@@ -99,7 +105,7 @@
              IF C-CURR-CHAR IS ALPHABETIC-LOWER
                 AND I-CURR-VAL-ASCII NOT = I-SPACE-ASCII
       *       Debug
-              DISPLAY "lowercase     " WITH NO ADVANCING
+      *       DISPLAY "lowercase     " WITH NO ADVANCING
               
       *       Add the shift amount to the ASCII value
               ADD I-SHIFT-AMOUNT
@@ -124,13 +130,13 @@
              END-IF
              
       *      Debug
-             DISPLAY " | New val: ", I-NEW-VAL-ASCII WITH NO ADVANCING
+      *      DISPLAY " | New val: ", I-NEW-VAL-ASCII WITH NO ADVANCING
              
       *      Get the new character
              MOVE FUNCTION CHAR(I-NEW-VAL-ASCII) TO C-NEW-CHAR
 
       *      Debug
-             DISPLAY ", as char: '", C-NEW-CHAR, "'"
+      *      DISPLAY ", as char: '", C-NEW-CHAR, "'"
              
       *      Move the new character back into the string
              MOVE C-NEW-CHAR TO STR-OUTPUT(I-ITER:1) 
@@ -138,11 +144,11 @@
             END-PERFORM
             
       *     Debug
-            DISPLAY "RESULT: ", STR-OUTPUT.
+      *     DISPLAY "RESULT: '", STR-OUTPUT, "'"
             
-            DISPLAY "REACHED END OF CAESAR SHIFT"
+      *     DISPLAY "REACHED END OF CAESAR SHIFT"
+            EXIT PROGRAM.
 
-            EXIT PROGRAM RETURNING I-RET-VAL.
            END PROGRAM CAESAR-SHIFT.
 
 
@@ -165,23 +171,20 @@
              01 STR-OUTPUT     PIC X(100).
 
       *    Return variable
-             01 I-RET-VAL      PIC 9 VALUE 0.
-             
            PROCEDURE DIVISION
-            USING STR-INPUT, I-INPUT-LEN, I-SHIFT-AMOUNT, STR-OUTPUT
-            RETURNING I-RET-VAL.
-            
-            DISPLAY "ENTERED ENCRYPT"
+            USING STR-INPUT, I-INPUT-LEN, I-SHIFT-AMOUNT, STR-OUTPUT.
+
+      *     DISPLAY "ENTERED ENCRYPT"
 
             CALL "CAESAR-SHIFT" USING
-             STR-INPUT,
-             I-INPUT-LEN,
-             I-SHIFT-AMOUNT,
-             STR-OUTPUT RETURNING I-RET-VAL.
+             BY REFERENCE STR-INPUT,
+             BY REFERENCE I-INPUT-LEN,
+             BY REFERENCE I-SHIFT-AMOUNT,
+             BY REFERENCE STR-OUTPUT.
 
-             DISPLAY "REACHED END OF ENCRYPT"
+      *      DISPLAY "REACHED END OF ENCRYPT"
 
-            EXIT PROGRAM RETURNING I-RET-VAL.
+            EXIT PROGRAM.
            END PROGRAM ENCRYPT.
 
       *    // Decrypt

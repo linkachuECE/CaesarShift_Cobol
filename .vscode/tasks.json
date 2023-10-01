@@ -17,9 +17,9 @@
             },
             "args": [
                 "-x",
-                "${workspaceFolder}/src/*.cbl",
+                "${workspaceFolder}/src/*.cob",
                 "-o",
-                "${workspaceFolder}/bin/cobolProgram"
+                "${workspaceFolder}/bin/target"
             ]
         },
         {
@@ -44,7 +44,7 @@
         {
             "label": "start",
             "type": "shell",
-            "command": "${workspaceFolder}/bin/cobolProgram",
+            "command": "${workspaceFolder}/bin/target",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
