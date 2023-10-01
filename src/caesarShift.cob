@@ -1,5 +1,6 @@
       *    // Encrypt
-           PROGRAM-ID. CAESAR-SHIFT.
+           IDENTIFICATION DIVISION.
+            PROGRAM-ID. CAESAR-SHIFT.
       *      
            DATA DIVISION.
             WORKING-STORAGE SECTION.
@@ -49,8 +50,16 @@
       *     DISPLAY "MOVED SPACES TO OUTPUT"
 
       *     Loop through each character in the the string
+
+      *    ********** THIS IS WHERE THE PROBLEM IS **************
+
             PERFORM VARYING I-ITER FROM 1 BY 1 
                     UNTIL I-ITER >= I-INPUT-LEN
+
+      *    OCCASIONALLY, THIS PERFORM LOOP WILL CONTINUE LONG AFTER
+      *    I-ITER HAS SURPASSED THE VALUE OF I-INPUT-LEN.
+
+
 
       *      Grab the current CHARACTER
       *      DISPLAY "ABOUT TO MOVE A CHARACTER FROM",
