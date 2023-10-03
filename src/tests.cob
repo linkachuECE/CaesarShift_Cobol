@@ -13,6 +13,7 @@
              01 STR-TEST-INPUT     PIC X(100).
              01 STR-TEST-OUTPUT    PIC X(100).
              01 STR-TEST-EXPECT    PIC X(100).
+             01 I-INPUT-LEN        PIC 999.
              01 I-PASS-FAIL        PIC 9.
 
            PROCEDURE DIVISION
@@ -21,6 +22,7 @@
                    STR-TEST-INPUT,
                    STR-TEST-OUTPUT,
                    STR-TEST-EXPECT,
+                   I-INPUT-LEN,
                    I-PASS-FAIL.
 
             IF I-PASS-FAIL = 1
@@ -33,9 +35,12 @@
                      ": FAILED"
             END-IF
 
-            DISPLAY "    - IN:       '", STR-TEST-INPUT, "'"    
-            DISPLAY "    - OUT:      '", STR-TEST-OUTPUT, "'"    
-            DISPLAY "    - EXPECTED: '", STR-TEST-EXPECT, "'"    
+            DISPLAY "    - IN:       '",
+                  STR-TEST-INPUT(1:I-INPUT-LEN), "'"    
+            DISPLAY "    - OUT:      '",
+                  STR-TEST-OUTPUT(1:I-INPUT-LEN), "'"    
+            DISPLAY "    - EXPECTED: '",
+                  STR-TEST-EXPECT(1:I-INPUT-LEN), "'"    
 
             EXIT PROGRAM.
            END PROGRAM DISPLAY-TEST-RESULTS.
@@ -61,10 +66,6 @@
            PROCEDURE DIVISION
             USING STR-INPUT1, STR-INPUT2, I-RET-VAL
             RETURNING I-RET-VAL.
-      *
-      *     DISPLAY "ENTERED ASSERT-STR-EQUALS"
-      *     DISPLAY "COMPARING '", STR-INPUT1, "'"
-      *     DISPLAY "AND '", STR-INPUT2 "'"
 
             IF STR-INPUT1 = STR-INPUT2
              COMPUTE I-RET-VAL = 1
@@ -102,7 +103,8 @@
             
       *    // An empty STRING
             
-            DISPLAY "TESTING 'ENCRYPT'"
+            DISPLAY "*** TESTING 'ENCRYPT' ***"
+            DISPLAY " "
 
             MOVE " " TO STR-CURR-TEST-INPUT.
             MOVE " " TO STR-CURR-TEST-EXPECT.
@@ -169,9 +171,9 @@
             PERFORM TEST-RUN.
 
       *    // Random sentence 1
-            MOVE "Real eyes realize real i's" TO STR-CURR-TEST-INPUT.
-            MOVE "Ylhs lflz ylhspgl ylhs p'z" TO STR-CURR-TEST-EXPECT.
-            MOVE 026 TO I-CURR-STR-LEN.
+            MOVE "Real eyes realize real lies" TO STR-CURR-TEST-INPUT.
+            MOVE "Ylhs lflz ylhspgl ylhs splz" TO STR-CURR-TEST-EXPECT.
+            MOVE 027 TO I-CURR-STR-LEN.
             MOVE 07 TO I-CURR-SHIFT-AMOUNT.
             MOVE "Random sentence 1" 
                TO STR-CURR-TEST-NAME.
@@ -208,25 +210,17 @@
             EXIT PROGRAM.
 
            TEST-RUN.
-      *     DISPLAY "ENTERED TEST-RUN PARAGRAPH"
-      *     DISPLAY "ABOUT TO CALL ENCRYPT"
             CALL "ENCRYPT" USING
              BY REFERENCE STR-CURR-TEST-INPUT,
              BY CONTENT I-CURR-STR-LEN,
              BY CONTENT I-CURR-SHIFT-AMOUNT,
              BY REFERENCE STR-CURR-TEST-OUTPUT.
             
-      *     DISPLAY "ABOUT TO CALL ASSERT-STR-EQUALS"
             CALL "ASSERT-STR-EQUALS" USING
              BY REFERENCE STR-CURR-TEST-EXPECT,
              BY REFERENCE STR-CURR-TEST-OUTPUT,
              BY REFERENCE I-CURR-TEST-RESULT,
              RETURNING I-CURR-TEST-RESULT.
-            
-      *     DISPLAY "ABOUT TO CALL DISPLAY-TEST-RESULTS WITH:"
-      *     DISPLAY "- STR-CURR-TEST-NAME: '", STR-CURR-TEST-NAME, "'"
-      *     DISPLAY "- I-CURR-TEST-NAME-LEN: ", I-CURR-TEST-NAME-LEN
-      *     DISPLAY "- I-CURR-TEST-RESULT: ", I-CURR-TEST-RESULT
 
             CALL "DISPLAY-TEST-RESULTS" USING
              BY REFERENCE STR-CURR-TEST-NAME,
@@ -234,14 +228,14 @@
              BY REFERENCE STR-CURR-TEST-INPUT,
              BY REFERENCE STR-CURR-TEST-OUTPUT,
              BY REFERENCE STR-CURR-TEST-EXPECT,
+             BY CONTENT I-CURR-STR-LEN,
              BY CONTENT I-CURR-TEST-RESULT.
+            
+            DISPLAY " "
            
            EXIT.
 
            END PROGRAM TEST-ENCRYPT.
-
-
-
 
 
       *    // Decrypt TEST
@@ -267,7 +261,8 @@
       *    Return variable
            PROCEDURE DIVISION.
             
-            DISPLAY "TESTING 'DECRYPT'"
+            DISPLAY "*** TESTING 'DECRYPT' ***"
+            DISPLAY " "
 
       *    // An empty STRING
             MOVE " " TO STR-CURR-TEST-INPUT.
@@ -276,7 +271,7 @@
             MOVE 1 TO I-CURR-SHIFT-AMOUNT.
             MOVE "Empty String" TO STR-CURR-TEST-NAME.
             MOVE 12 TO I-CURR-TEST-NAME-LEN.
-
+            
             PERFORM TEST-RUN.
 
       *    // A string of all the same values
@@ -335,9 +330,9 @@
             PERFORM TEST-RUN.
 
       *    // Random sentence 1
-            MOVE "Ylhs lflz ylhspgl ylhs p'z" TO STR-CURR-TEST-INPUT.
-            MOVE "Real eyes realize real i's" TO STR-CURR-TEST-EXPECT.
-            MOVE 026 TO I-CURR-STR-LEN.
+            MOVE "Ylhs lflz ylhspgl ylhs splz" TO STR-CURR-TEST-INPUT.
+            MOVE "Real eyes realize real lies" TO STR-CURR-TEST-EXPECT.
+            MOVE 027 TO I-CURR-STR-LEN.
             MOVE 07 TO I-CURR-SHIFT-AMOUNT.
             MOVE "Random sentence 1" 
                TO STR-CURR-TEST-NAME.
@@ -380,23 +375,58 @@
              BY CONTENT I-CURR-SHIFT-AMOUNT,
              BY REFERENCE STR-CURR-TEST-OUTPUT.
             
-      *     DISPLAY "ABOUT TO CALL ASSERT-STR-EQUALS"
             CALL "ASSERT-STR-EQUALS" USING
              BY REFERENCE STR-CURR-TEST-EXPECT,
              BY REFERENCE STR-CURR-TEST-OUTPUT,
              BY REFERENCE I-CURR-TEST-RESULT,
              RETURNING I-CURR-TEST-RESULT.
-            
+
             CALL "DISPLAY-TEST-RESULTS" USING
              BY REFERENCE STR-CURR-TEST-NAME,
              BY CONTENT I-CURR-TEST-NAME-LEN,
              BY REFERENCE STR-CURR-TEST-INPUT,
              BY REFERENCE STR-CURR-TEST-OUTPUT,
              BY REFERENCE STR-CURR-TEST-EXPECT,
+             BY CONTENT I-CURR-STR-LEN,
              BY CONTENT I-CURR-TEST-RESULT.
+               
+             DISPLAY " "
+
+             EXIT.
            
-            EXIT.
            END PROGRAM TEST-DECRYPT.
+
+      *    // Decrypt TEST
+           IDENTIFICATION DIVISION.
+           PROGRAM-ID. TEST-SOLVE.
+
+           DATA DIVISION.
+            WORKING-STORAGE SECTION.
+      *    Internal variables
+             01 STR-TEST-INPUT        PIC X(100).
+             01 I-STR-LEN             PIC 999.
+             01 I-MAX-SHIFT-AMOUNT    PIC 99.
+
+            LINKAGE SECTION.
+      *    Return variable
+           PROCEDURE DIVISION.
+            
+            DISPLAY "*** TESTING 'SOLVE' ***"
+            DISPLAY " "
+
+      *    // An empty STRING
+            MOVE "Ymj wjatqzynts bnqq sty gj yjqjanxji"
+               TO STR-TEST-INPUT.
+            MOVE 36 TO I-STR-LEN.
+            MOVE 26 TO I-MAX-SHIFT-AMOUNT.
+
+            CALL "SOLVE" USING 
+               BY REFERENCE STR-TEST-INPUT,
+               BY CONTENT I-STR-LEN,
+               BY CONTENT I-MAX-SHIFT-AMOUNT.
+
+            EXIT PROGRAM.
+           END PROGRAM TEST-SOLVE.
 
 
            IDENTIFICATION DIVISION.
@@ -404,11 +434,13 @@
            
            PROCEDURE DIVISION.
 
-           CALL "TEST-ENCRYPT".
-           DISPLAY " ".
-           CALL "TEST-DECRYPT".
-           DISPLAY " ".
-      *    CALL "TEST-SHOW"
+            CALL "TEST-ENCRYPT".
+            DISPLAY " ".
+            CALL "TEST-DECRYPT".
+            DISPLAY " ".
+            CALL "TEST-SOLVE"
+
+            EXIT PROGRAM.
 
            END PROGRAM CAESAR-CIPHER-TEST-SUITE.
 

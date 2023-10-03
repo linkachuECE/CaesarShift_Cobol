@@ -35,9 +35,7 @@
             USING STR-INPUT I-INPUT-LEN I-SHIFT-AMOUNT STR-OUTPUT.
 
       *     INITIALIZE the OUTPUT STRING TO have only SPACES
-      *     DISPLAY "ABOUT TO MOVE SPACES TO OUTPUT"
             MOVE SPACES TO STR-OUTPUT.
-      *     DISPLAY "MOVED SPACES TO OUTPUT"
 
       *     Loop through each character in the the string
 
@@ -193,9 +191,8 @@
       *    Return variable
            PROCEDURE DIVISION
             USING STR-INPUT, I-INPUT-LEN, I-SHIFT-AMOUNT, STR-OUTPUT.
-           
              COMPUTE I-DECRYPT-SHIFT-AMOUNT = -I-SHIFT-AMOUNT.
-
+             
             CALL "CAESAR-SHIFT" USING
              BY REFERENCE STR-INPUT,
              BY CONTENT I-INPUT-LEN,
@@ -207,15 +204,36 @@
 
 
       *    Solve
-      *    IDENTIFICATION DIVISION.
-      *     FUNCTION-ID. SOLVE.
+           IDENTIFICATION DIVISION.
+            PROGRAM-ID. SOLVE.
 
-      *    DATA DIVISION.
-      *     WORKING-STORAGE SECTION.
-      *     LINKAGE SECTION.
-      *      
-      *    PROCEDURE DIVISION
-      *        
+           DATA DIVISION.
+            WORKING-STORAGE SECTION.
+             01 I-ITER         PIC 99.
+             01 STR-OUTPUT     PIC X(100).
 
-      *     GOBACK.
-      *    END FUNCTION SOLVE.
+            LINKAGE SECTION.
+             01 STR-INPUT       PIC X(100).
+             01 I-INPUT-LEN     PIC 999.
+             01 I-MAX-SHIFT-VAL PIC 99.
+             
+           PROCEDURE DIVISION 
+               USING STR-INPUT, I-INPUT-LEN, I-MAX-SHIFT-VAL.
+               
+               DISPLAY "- IN: " STR-INPUT
+               DISPLAY "- Outputs:"
+
+            PERFORM VARYING I-ITER
+                    FROM 1 BY 1 UNTIL
+                    I-ITER > I-MAX-SHIFT-VAL
+               
+               CALL "ENCRYPT"
+                   USING STR-INPUT, I-INPUT-LEN, I-ITER, STR-OUTPUT
+               
+               DISPLAY "  - Caesar ", I-ITER, ": '", 
+                               STR-OUTPUT(1:I-INPUT-LEN), "'"
+            END-PERFORM.
+
+            EXIT PROGRAM.
+
+           END PROGRAM SOLVE.
