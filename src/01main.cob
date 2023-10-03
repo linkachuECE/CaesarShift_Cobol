@@ -4,13 +4,12 @@
 
            DATA DIVISION.
             WORKING-STORAGE SECTION.
-            01 I-TEST-SUITE-RESULT PIC 9 VALUE 0.
 
            PROCEDURE DIVISION.
 
-      *     DISPLAY "ENTERED PROGRAM"
-            
-            CALL "TEST-ENCRYPT" RETURNING I-TEST-SUITE-RESULT.
+            CALL "CAESAR-CIPHER-TEST-SUITE".
+
+            EXIT PROGRAM.
                
            END PROGRAM 'MAIN'.
 
