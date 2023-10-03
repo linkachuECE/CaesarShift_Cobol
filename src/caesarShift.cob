@@ -214,8 +214,8 @@
 
             LINKAGE SECTION.
              01 STR-INPUT       PIC X(100).
-             01 I-INPUT-LEN     PIC 999.
-             01 I-MAX-SHIFT-VAL PIC 99.
+             01 I-INPUT-LEN     PIC 99.
+             01 I-MAX-SHIFT-VAL PIC 999.
              
            PROCEDURE DIVISION 
                USING STR-INPUT, I-INPUT-LEN, I-MAX-SHIFT-VAL.

@@ -1,2 +1,2 @@
 all:
-	cobc -x src/*.cob -o bin/target
+	cobc -Wall -x src/*.cob -o bin/target
