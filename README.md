@@ -1,4 +1,4 @@
-# cobolTesting
+# CaesarShift_Cobol
 This is for the Caesar Shift assignment for CS311. To run, first install GnuCobol using:
 
 ```
